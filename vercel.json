@@ -1,13 +1,9 @@
 {
-  "functions": {
-    "backend/hono.ts": {
-      "runtime": "nodejs20.x"
-    }
-  },
+  "version": 2,
+  "builds": [
+    { "src": "hono.ts", "use": "@vercel/node" }
+  ],
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/backend/hono.ts"
-    }
+    { "source": "/(.*)", "destination": "/hono.ts" }
   ]
 }
