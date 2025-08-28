@@ -1,10 +1,1 @@
-{
-  "version": 2,
-  "builds": [
-    { "src": "hono.ts", "use": "@vercel/node" }
-  ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/hono.ts" }
-    { "source": "/api/(.*)", "destination": "/hono.ts" }
-  ]
-}
+{ "version": 2, "builds": [ { "src": "hono.ts", "use": "@vercel/node" } ], "rewrites": [ { "source": "/(.*)", "destination": "/hono.ts" } ] }
