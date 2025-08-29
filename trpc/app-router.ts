@@ -102,6 +102,16 @@ import {
   getCommentReportCountProcedure
 } from "./routes/comments/reports/route";
 
+// Reminders routes
+import {
+  getUserRemindersProcedure,
+  toggleReminderProcedure,
+  canCreateReminderProcedure,
+  sendTestNotificationProcedure,
+  deleteReminderProcedure,
+  getReminderStatsProcedure
+} from "./routes/reminders/route";
+
 export const appRouter = createTRPCRouter({
   example: createTRPCRouter({
     hi: hiRoute,
@@ -203,6 +213,15 @@ export const appRouter = createTRPCRouter({
       checkUserReported: checkUserReportedCommentProcedure,
       getCount: getCommentReportCountProcedure,
     }),
+  }),
+  
+  reminders: createTRPCRouter({
+    getUserReminders: getUserRemindersProcedure,
+    toggleReminder: toggleReminderProcedure,
+    canCreateReminder: canCreateReminderProcedure,
+    sendTestNotification: sendTestNotificationProcedure,
+    deleteReminder: deleteReminderProcedure,
+    getStats: getReminderStatsProcedure,
   }),
 });
 
