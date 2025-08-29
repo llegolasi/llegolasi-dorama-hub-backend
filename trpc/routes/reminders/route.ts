@@ -85,12 +85,23 @@ export const toggleReminderProcedure = publicProcedure
   .mutation(async ({ input, ctx }) => {
     try {
       // Verificar se já existe um lembrete para este drama
-      const { data: existingReminder } = await ctx.supabase
-        .from('release_reminders')
-        .select('id, notification_id')
-        .eq('user_id', input.userId)
-        .eq('release_id', input.dramaId)
+      // Primeiro, encontrar o ID interno do drama na tabela upcoming_releases
+      const { data: releaseRecord } = await ctx.supabase
+        .from('upcoming_releases')
+        .select('id')
+        .eq('tmdb_id', input.dramaId)
         .single();
+
+      let existingReminder = null;
+      if (releaseRecord) {
+        const { data } = await ctx.supabase
+          .from('release_reminders')
+          .select('id, notification_id')
+          .eq('user_id', input.userId)
+          .eq('release_id', releaseRecord.id)
+          .single();
+        existingReminder = data;
+      }
 
       if (existingReminder) {
         // Deletar lembrete existente
@@ -133,6 +144,40 @@ export const toggleReminderProcedure = publicProcedure
           });
         }
 
+        // Verificar se o drama já existe na tabela upcoming_releases
+        let { data: existingRelease } = await ctx.supabase
+          .from('upcoming_releases')
+          .select('id')
+          .eq('tmdb_id', input.dramaId)
+          .single();
+
+        // Se não existe, criar o registro na tabela upcoming_releases
+        if (!existingRelease) {
+          const { data: newRelease, error: releaseError } = await ctx.supabase
+            .from('upcoming_releases')
+            .insert({
+              tmdb_id: input.dramaId, // Usar dramaId como tmdb_id
+              name: input.dramaName,
+              poster_path: input.dramaPoster,
+              release_date: input.releaseDate,
+              status: 'upcoming',
+              overview: `Drama: ${input.dramaName}`,
+              origin_country: ['KR'] // Default para K-drama
+            })
+            .select('id')
+            .single();
+
+          if (releaseError) {
+            console.error('Error creating upcoming release:', releaseError);
+            throw new TRPCError({
+              code: 'INTERNAL_SERVER_ERROR',
+              message: 'Failed to create upcoming release record',
+            });
+          }
+
+          existingRelease = newRelease;
+        }
+
         // Criar novo lembrete
         const scheduledTime = new Date(input.releaseDate);
         scheduledTime.setHours(10, 0, 0, 0); // 10h da manhã
@@ -141,7 +186,7 @@ export const toggleReminderProcedure = publicProcedure
           .from('release_reminders')
           .insert({
             user_id: input.userId,
-            release_id: input.dramaId,
+            release_id: existingRelease.id, // Usar o ID da tabela upcoming_releases
             drama_name: input.dramaName,
             drama_poster: input.dramaPoster,
             release_date: input.releaseDate,
