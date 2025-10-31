@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { publicProcedure, protectedProcedure } from '@/backend/trpc/create-context';
+import { publicProcedure, protectedProcedure } from '@/trpc/create-context';
+
 
 // Get all achievements with user's unlock status
 export const getUserAchievementsProcedure = protectedProcedure
