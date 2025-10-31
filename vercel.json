@@ -1,9 +1,10 @@
 {
   "version": 2,
+  "installCommand": "bun install",
   "builds": [
-    { "src": "api/index.ts", "use": "@vercel/node" }
+    { "src": "hono.ts", "use": "@vercel/node" }
   ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/api/index.ts" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/hono.ts" }
   ]
 }
