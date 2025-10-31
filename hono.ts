@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import Hono from "hono";
 import { trpcServer } from "@hono/trpc-server";
 import { cors } from "hono/cors";
 import { appRouter } from "./trpc/app-router";
