@@ -102,6 +102,24 @@ import {
   getCommentReportCountProcedure
 } from "./routes/comments/reports/route";
 
+// Collections routes
+import {
+  getHomepageCollections,
+  getCollectionDramas,
+  getCollectionById
+} from "./routes/collections/route";
+
+// Episodes routes
+import { episodesRouter } from "./routes/episodes/route";
+
+// Achievements routes
+import {
+  getUserAchievementsProcedure,
+  getUserCompletedAchievementsProcedure,
+  getUserAchievementStatsProcedure,
+  unlockAchievementProcedure
+} from "./routes/achievements/route";
+
 export const appRouter = createTRPCRouter({
   example: createTRPCRouter({
     hi: hiRoute,
@@ -203,6 +221,21 @@ export const appRouter = createTRPCRouter({
       checkUserReported: checkUserReportedCommentProcedure,
       getCount: getCommentReportCountProcedure,
     }),
+  }),
+  
+  collections: createTRPCRouter({
+    getHomepage: getHomepageCollections,
+    getDramas: getCollectionDramas,
+    getById: getCollectionById,
+  }),
+  
+  episodes: episodesRouter,
+  
+  achievements: createTRPCRouter({
+    getUserAchievements: getUserAchievementsProcedure,
+    getUserCompletedAchievements: getUserCompletedAchievementsProcedure,
+    getUserAchievementStats: getUserAchievementStatsProcedure,
+    unlockAchievement: unlockAchievementProcedure,
   }),
 });
 
